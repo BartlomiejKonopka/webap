@@ -10,14 +10,14 @@
     <div class="container">
         <div class="auth-box" id="login-box">
             <h2>Login</h2>
-            <form action="{{ url_for('login') }}" method="POST">
+            <form action="{{ url_for('login') }}" method="POST" novalidate id="loginForm">
                 <div class="input-group">
-                    <input type="email" name="email" placeholder="Email" required>
-                    <div class="error-message" id="email-error"></div> <!-- Custom error message -->
+                    <input type="email" name="email" placeholder="Email" required id="email">
+                    <div class="error-message" id="emailError"></div>
                 </div>
                 <div class="input-group">
-                    <input type="password" name="password" placeholder="Password" required>
-                    <div class="error-message" id="password-error"></div> <!-- Custom error message -->
+                    <input type="password" name="password" placeholder="Password" required id="password">
+                    <div class="error-message" id="passwordError"></div>
                 </div>
                 <button type="submit" class="btn">Log In</button>
                 
@@ -39,49 +39,39 @@
     </div>
 
     <script>
-        // Function to check if email is valid
-        function isValidEmail(email) {
-            const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-            return regex.test(email);
-        }
-
-        // Function to validate the form
-        function validateForm(event) {
-            event.preventDefault(); // Prevent form submission if there are errors
-
-            // Clear any previous error messages
-            const emailError = document.getElementById('email-error');
-            const passwordError = document.getElementById('password-error');
-            emailError.textContent = '';
-            passwordError.textContent = '';
-
-            let isValid = true;
-
-            // Validate email
-            const email = document.querySelector('input[name="email"]').value;
-            if (!isValidEmail(email)) {
-                emailError.textContent = 'Please enter a valid email address.';
-                isValid = false;
+        // Custom Validation for the Login Form
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();  // Prevent form submission
+            
+            // Clear previous errors
+            document.getElementById('emailError').textContent = '';
+            document.getElementById('passwordError').textContent = '';
+            
+            // Get input values
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            let formIsValid = true;
+            
+            // Email validation (using regex for a valid email pattern)
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email)) {
+                document.getElementById('emailError').textContent = 'Please enter a valid email address.';
+                formIsValid = false;
             }
-
-            // Validate password
-            const password = document.querySelector('input[name="password"]').value;
-            if (password.length < 6) {  // Example check for minimum length
-                passwordError.textContent = 'Password must be at least 6 characters long.';
-                isValid = false;
+            
+            // Password validation (length check)
+            if (password.length < 4) {
+                document.getElementById('passwordError').textContent = 'Password must be at least 4 characters long.';
+                formIsValid = false;
             }
-
+            
             // If the form is valid, submit it
-            if (isValid) {
-                event.target.submit();  // Submit the form if there are no errors
+            if (formIsValid) {
+                this.submit();  // This will submit the form
+            } else {
+                event.preventDefault();  // Prevent form submission if validation fails
             }
-        }
-
-        // Attach the validateForm function to the form's submit event
-        const form = document.querySelector('form');
-        if (form) {
-            form.addEventListener('submit', validateForm);
-        }
+        });
     </script>
 </body>
 </html>

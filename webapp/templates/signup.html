@@ -15,18 +15,18 @@
                 <p>User already exists.</p>
                 <button class="btn" onclick="window.location.href='/'">Log In</button>
             {% else %}
-                <form action="{{ url_for('signup') }}" method="POST">
+                <form action="{{ url_for('signup') }}" method="POST" novalidate id="signupForm">
                     <div class="input-group">
-                        <input type="email" name="email" placeholder="Email" required>
-                        <div class="error-message" id="email-error"></div> <!-- Custom error message -->
+                        <input type="email" name="email" placeholder="Email" required id="email">
+                        <div class="error-message" id="emailError"></div>
                     </div>
                     <div class="input-group">
-                        <input type="text" name="username" placeholder="Username" required>
-                        <div class="error-message" id="username-error"></div> <!-- Custom error message -->
+                        <input type="text" name="username" placeholder="Username" required id="username">
+                        <div class="error-message" id="usernameError"></div>
                     </div>
                     <div class="input-group">
-                        <input type="password" name="password" placeholder="Password" required>
-                        <div class="error-message" id="password-error"></div> <!-- Custom error message -->
+                        <input type="password" name="password" placeholder="Password" required id="password">
+                        <div class="error-message" id="passwordError"></div>
                     </div>
                     <button type="submit" class="btn">Sign Up</button>
                 </form>
@@ -45,58 +45,47 @@
     </div>
 
     <script>
-        // Function to check if email is valid
-        function isValidEmail(email) {
-            const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-            return regex.test(email);
-        }
+        // Custom Validation for the Sign-Up Form
+        document.getElementById('signupForm').addEventListener('submit', function(event) {
+            event.preventDefault();  // Prevent form submission
+            
+            // Clear previous errors
+            document.getElementById('emailError').textContent = '';
+            document.getElementById('usernameError').textContent = '';
+            document.getElementById('passwordError').textContent = '';
+            
+            // Get input values
+            const email = document.getElementById('email').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            let formIsValid = true;
 
-        // Function to validate the form
-        function validateForm(event) {
-            event.preventDefault(); // Prevent form submission if there are errors
-
-            // Clear any previous error messages
-            const emailError = document.getElementById('email-error');
-            const usernameError = document.getElementById('username-error');
-            const passwordError = document.getElementById('password-error');
-            emailError.textContent = '';
-            usernameError.textContent = '';
-            passwordError.textContent = '';
-
-            let isValid = true;
-
-            // Validate email
-            const email = document.querySelector('input[name="email"]').value;
-            if (!isValidEmail(email)) {
-                emailError.textContent = 'Please enter a valid email address.';
-                isValid = false;
+            // Email validation
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email)) {
+                document.getElementById('emailError').textContent = 'Please enter a valid email address.';
+                formIsValid = false;
             }
 
-            // Validate username
-            const username = document.querySelector('input[name="username"]').value;
-            if (!username.trim()) {
-                usernameError.textContent = 'Username cannot be empty.';
-                isValid = false;
+            // Username validation (check if it's empty)
+            if (username.trim() === '') {
+                document.getElementById('usernameError').textContent = 'Username cannot be empty.';
+                formIsValid = false;
             }
 
-            // Validate password
-            const password = document.querySelector('input[name="password"]').value;
-            if (password.length < 6) {  // Example check for minimum length
-                passwordError.textContent = 'Password must be at least 6 characters long.';
-                isValid = false;
+            // Password validation (length check)
+            if (password.length < 4) {
+                document.getElementById('passwordError').textContent = 'Password must be at least 4 characters long.';
+                formIsValid = false;
             }
 
             // If the form is valid, submit it
-            if (isValid) {
-                event.target.submit();  // Submit the form if there are no errors
+            if (formIsValid) {
+                this.submit();  // This will submit the form
+            } else {
+                event.preventDefault();  // Prevent form submission if validation fails
             }
-        }
-
-        // Attach the validateForm function to the form's submit event
-        const form = document.querySelector('form');
-        if (form) {
-            form.addEventListener('submit', validateForm);
-        }
+        });
     </script>
 </body>
 </html>

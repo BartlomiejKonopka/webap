@@ -121,16 +121,10 @@ input {
     background-color: #f44336; /* Red for error */
 }
 
-/* Add a fade-out effect for messages after a few seconds */
-.flash-message.fade-out {
-    opacity: 0;
-    transition: opacity 1s ease-out;
-}
-
-/* Error message styling */
+/* Error message styles */
 .error-message {
+    color: #f44336;  /* Red color for errors */
     font-size: 14px;
-    color: red;
     margin-top: 5px;
     text-align: left;
 }

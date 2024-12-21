@@ -8,5 +8,10 @@
         "email": "aaa@aaa.com",
         "username": "skibidi",
         "password": "pbkdf2:sha256:1000000$WplIznaN11XuzTj8$aee2cd25a542216ec16c793bd22108aa87e11810b60100e42ea8f4a537793222"
+    },
+    {
+        "email": "asd@asd.1123",
+        "username": "asd",
+        "password": "pbkdf2:sha256:1000000$bsSlUSuRdz61suRv$9186bfd489b7b83ac7f45c6a2362176128d1e54fbe5900a54c5f347c85d95ff3"
     }
 ]
