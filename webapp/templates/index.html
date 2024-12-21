@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="auth-box" id="login-box">
+            <h2>Login</h2>
+            <form action="{{ url_for('login') }}" method="POST">
+                <div class="input-group">
+                    <input type="email" name="email" placeholder="Email" required>
+                    <div class="error-message" id="email-error"></div> <!-- Custom error message -->
+                </div>
+                <div class="input-group">
+                    <input type="password" name="password" placeholder="Password" required>
+                    <div class="error-message" id="password-error"></div> <!-- Custom error message -->
+                </div>
+                <button type="submit" class="btn">Log In</button>
+                
+                <p class="signup-link">Don't have an account? <a href="{{ url_for('signup') }}">Sign Up</a></p>
+            </form>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="flash-message {{ category }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+
+    <script>
+        // Function to check if email is valid
+        function isValidEmail(email) {
+            const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            return regex.test(email);
+        }
+
+        // Function to validate the form
+        function validateForm(event) {
+            event.preventDefault(); // Prevent form submission if there are errors
+
+            // Clear any previous error messages
+            const emailError = document.getElementById('email-error');
+            const passwordError = document.getElementById('password-error');
+            emailError.textContent = '';
+            passwordError.textContent = '';
+
+            let isValid = true;
+
+            // Validate email
+            const email = document.querySelector('input[name="email"]').value;
+            if (!isValidEmail(email)) {
+                emailError.textContent = 'Please enter a valid email address.';
+                isValid = false;
+            }
+
+            // Validate password
+            const password = document.querySelector('input[name="password"]').value;
+            if (password.length < 6) {  // Example check for minimum length
+                passwordError.textContent = 'Password must be at least 6 characters long.';
+                isValid = false;
+            }
+
+            // If the form is valid, submit it
+            if (isValid) {
+                event.target.submit();  // Submit the form if there are no errors
+            }
+        }
+
+        // Attach the validateForm function to the form's submit event
+        const form = document.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', validateForm);
+        }
+    </script>
+</body>
+</html>

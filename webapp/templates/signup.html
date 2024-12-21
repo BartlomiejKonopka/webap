@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="auth-box">
+            <h2>Sign Up</h2>
+
+            {% if user_exists %}
+                <p>User already exists.</p>
+                <button class="btn" onclick="window.location.href='/'">Log In</button>
+            {% else %}
+                <form action="{{ url_for('signup') }}" method="POST">
+                    <div class="input-group">
+                        <input type="email" name="email" placeholder="Email" required>
+                        <div class="error-message" id="email-error"></div> <!-- Custom error message -->
+                    </div>
+                    <div class="input-group">
+                        <input type="text" name="username" placeholder="Username" required>
+                        <div class="error-message" id="username-error"></div> <!-- Custom error message -->
+                    </div>
+                    <div class="input-group">
+                        <input type="password" name="password" placeholder="Password" required>
+                        <div class="error-message" id="password-error"></div> <!-- Custom error message -->
+                    </div>
+                    <button type="submit" class="btn">Sign Up</button>
+                </form>
+            {% endif %}
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul>
+                        {% for category, message in messages %}
+                            <li class="{{ category }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+
+    <script>
+        // Function to check if email is valid
+        function isValidEmail(email) {
+            const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            return regex.test(email);
+        }
+
+        // Function to validate the form
+        function validateForm(event) {
+            event.preventDefault(); // Prevent form submission if there are errors
+
+            // Clear any previous error messages
+            const emailError = document.getElementById('email-error');
+            const usernameError = document.getElementById('username-error');
+            const passwordError = document.getElementById('password-error');
+            emailError.textContent = '';
+            usernameError.textContent = '';
+            passwordError.textContent = '';
+
+            let isValid = true;
+
+            // Validate email
+            const email = document.querySelector('input[name="email"]').value;
+            if (!isValidEmail(email)) {
+                emailError.textContent = 'Please enter a valid email address.';
+                isValid = false;
+            }
+
+            // Validate username
+            const username = document.querySelector('input[name="username"]').value;
+            if (!username.trim()) {
+                usernameError.textContent = 'Username cannot be empty.';
+                isValid = false;
+            }
+
+            // Validate password
+            const password = document.querySelector('input[name="password"]').value;
+            if (password.length < 6) {  // Example check for minimum length
+                passwordError.textContent = 'Password must be at least 6 characters long.';
+                isValid = false;
+            }
+
+            // If the form is valid, submit it
+            if (isValid) {
+                event.target.submit();  // Submit the form if there are no errors
+            }
+        }
+
+        // Attach the validateForm function to the form's submit event
+        const form = document.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', validateForm);
+        }
+    </script>
+</body>
+</html>
